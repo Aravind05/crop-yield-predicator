@@ -167,6 +167,4 @@ with st.expander("🔍 Inspect Active Regression Formula"):
         f"**NPK & Fertilizer Factor ({nitrogen}N, {phosphorus}P, {potassium}K, {fertilizer} Fert):** `× {nutrient_factor:.3f}`"
     )
     st.write(f"**Pesticide Applied:** `{pesticide} kg/ha`")
-    st.write(
-        f"**Total Calculated Yield:** `{predicted_yield:.4f}` tonnes/ha"
-    )[span_3](start_span)[span_3](end_span)
+    st.write(f"**Total Calculated Yield:** `{predicted_yield:.4f}` tonnes/ha")

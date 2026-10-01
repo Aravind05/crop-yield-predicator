@@ -63,11 +63,11 @@ st.markdown(
     }
     </style>
 """,
-    unsafe_allow_snippet=True,
+    unsafe_allow_html=True,
 )
 
 # ---------------------------------------------------------
-# Sidebar Controls (Organized into Clean Accordions)
+# Sidebar Controls (Organized into Accordions)
 # ---------------------------------------------------------
 st.sidebar.title("⚙️ Dashboard Controls")
 st.sidebar.write("Customize parameters to analyze crop output.")
@@ -198,11 +198,11 @@ final_yield = max(
 # ---------------------------------------------------------
 st.markdown(
     '<div class="main-title">🌾 Crop Yield Prediction Dashboard</div>',
-    unsafe_allow_snippet=True,
+    unsafe_allow_html=True,
 )
 st.markdown(
     '<div class="sub-title">Real-time agricultural yield forecasting using machine learning regression models.</div>',
-    unsafe_allow_snippet=True,
+    unsafe_allow_html=True,
 )
 
 # Top Output Hero Cards
@@ -216,7 +216,7 @@ with col1:
             <div class="metric-value">{final_yield:.2f} <span style="font-size:1.2rem;">tonnes/ha</span></div>
         </div>
     """,
-        unsafe_allow_snippet=True,
+        unsafe_allow_html=True,
     )
 
 with col2:
@@ -229,7 +229,7 @@ with col2:
             <p style="margin-bottom:0;"><strong>Soil & Nutrients:</strong> pH {soil_ph} | NPK Total: {npk_total:.0f} kg/ha | Fertilizer: {fertilizer} kg/ha</p>
         </div>
     """,
-        unsafe_allow_snippet=True,
+        unsafe_allow_html=True,
     )
 
 st.write("")
@@ -285,7 +285,7 @@ with tab1:
             f"{potassium} kg/ha",
             f"{fertilizer} kg/ha",
             f"{pesticide} kg/ha",
-            f"<strong>{final_yield:.2f} tonnes/ha</strong>",
+            f"{final_yield:.2f} tonnes/ha",
         ],
     }
 
@@ -313,11 +313,19 @@ with tab2:
 with tab3:
     st.write("### Agricultural Insights")
     if 6.0 <= soil_ph <= 7.5:
-        st.success("✅ **Soil pH is Optimal:** Your soil pH is in the ideal neutral range (6.0–7.5) for optimal nutrient absorption.")
+        st.success(
+            "✅ **Soil pH is Optimal:** Your soil pH is in the ideal neutral range (6.0–7.5) for optimal nutrient absorption."
+        )
     else:
-        st.warning("⚠️ **Soil pH Alert:** Soil pH is outside the ideal range (6.0–7.5). Consider applying lime (if acidic) or gypsum (if alkaline).")
+        st.warning(
+            "⚠️ **Soil pH Alert:** Soil pH is outside the ideal range (6.0–7.5). Consider applying lime (if acidic) or gypsum (if alkaline)."
+        )
 
     if rainfall < 300:
-        st.info("💧 **Water Stress Warning:** Rainfall is low. Supplemental irrigation is strongly recommended.")
+        st.info(
+            "💧 **Water Stress Warning:** Rainfall is low. Supplemental irrigation is strongly recommended."
+        )
     elif rainfall > 800:
-        st.info("🌧️ **High Moisture:** Sufficient rainfall detected. Ensure proper field drainage to prevent waterlogging.")
+        st.info(
+            "🌧️ **High Moisture:** Sufficient rainfall detected. Ensure proper field drainage to prevent waterlogging."
+        )

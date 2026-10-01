@@ -4,62 +4,54 @@ import streamlit as st
 
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Crop Yield Predictor Dashboard",
+    page_title="Crop Yield Predictor",
     page_icon="🌾",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# 2. Custom CSS for Modern & Clean UI
+# 2. Custom CSS for Sleek Dark Theme UI
 st.markdown(
     """
     <style>
-    /* Main Header Styling */
-    .main-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: #1E3A8A;
+    /* Dark Theme Styles */
+    .stApp {
+        background-color: #0E1117;
+        color: #E2E8F0;
+    }
+    
+    /* Output Header Card */
+    .output-container {
+        background-color: #161B22;
+        border: 1px solid #30363D;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 20px;
+    }
+    
+    .output-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #94A3B8;
+        margin-bottom: 4px;
+    }
+    
+    .output-value {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #38BDF8;
         margin-bottom: 0px;
     }
-    .sub-title {
-        font-size: 1.05rem;
-        color: #4B5563;
-        margin-bottom: 25px;
-    }
     
-    /* Result Card Styling */
-    .metric-card {
-        background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-        padding: 24px;
-        border-radius: 16px;
-        color: white;
-        text-align: center;
-        box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+    .sub-text {
+        font-size: 0.9rem;
+        color: #64748B;
     }
-    .metric-label {
-        font-size: 1.1rem;
-        font-weight: 500;
-        opacity: 0.9;
-        margin-bottom: 8px;
-    }
-    .metric-value {
-        font-size: 2.8rem;
-        font-weight: 800;
-        margin-bottom: 0;
-    }
-    
-    /* Info Card Styling */
-    .info-card {
-        background-color: #F3F4F6;
-        border-left: 5px solid #3B82F6;
-        padding: 18px;
-        border-radius: 8px;
-    }
-    
-    /* Table Highlights */
+
+    /* Parameter Table Custom Styling */
     .stTable {
-        border-radius: 10px;
-        overflow: hidden;
+        background-color: #161B22 !important;
+        border-radius: 8px;
     }
     </style>
 """,
@@ -67,87 +59,59 @@ st.markdown(
 )
 
 # ---------------------------------------------------------
-# Sidebar Controls (Organized into Accordions)
+# Sidebar Controls (Sequential Single Column)
 # ---------------------------------------------------------
-st.sidebar.title("⚙️ Dashboard Controls")
-st.sidebar.write("Customize parameters to analyze crop output.")
+st.sidebar.title("🌱 Input Parameters")
+st.sidebar.caption("Adjust parameters to compute expected crop output.")
 
-# Accordion 1: Crop Selection
-with st.sidebar.expander("🌱 Crop Selection", expanded=True):
-    crop_type = st.selectbox(
-        "Target Crop",
-        [
-            "Pulses",
-            "Rice",
-            "Wheat",
-            "Maize",
-            "Cotton",
-            "Sugarcane",
-            "Groundnut",
-            "Soybean",
-        ],
-        help="Select the crop type to adjust yield factors.",
-    )
+# Crop Selection
+crop_type = st.sidebar.selectbox(
+    "Target Crop",
+    [
+        "Rice",
+        "Wheat",
+        "Maize",
+        "Cotton",
+        "Sugarcane",
+        "Pulses",
+        "Groundnut",
+        "Soybean",
+    ],
+)
 
-# Accordion 2: Environmental Conditions (MATLAB Variables)
-with st.sidebar.expander("🌡️ Climate & Weather", expanded=True):
-    temperature = st.slider(
-        "Temperature (°C)",
-        10.0,
-        50.0,
-        17.0,
-        step=0.5,
-        help="Average seasonal ambient temperature.",
-    )
-    rainfall = st.slider(
-        "Rainfall (mm)",
-        100.0,
-        1000.0,
-        950.0,
-        step=10.0,
-        help="Total accumulated seasonal precipitation.",
-    )
-    soil_moisture = st.slider(
-        "Soil Moisture (%)",
-        10.0,
-        90.0,
-        16.0,
-        step=1.0,
-        help="Volumetric root-zone moisture percentage.",
-    )
+st.sidebar.markdown("---")
+st.sidebar.subheader("🌡️ Environmental Conditions")
+temperature = st.sidebar.slider("Temperature (°C)", 10.0, 50.0, 17.0, step=0.5)
+rainfall = st.sidebar.slider("Rainfall (mm)", 100.0, 1000.0, 950.0, step=10.0)
+soil_moisture = st.sidebar.slider(
+    "Soil Moisture (%)", 10.0, 90.0, 16.0, step=1.0
+)
 
-# Accordion 3: Soil Chemistry & Nutrients
-with st.sidebar.expander("🧪 Soil Health & Nutrients", expanded=False):
-    soil_ph = st.slider(
-        "Soil pH Level",
-        4.0,
-        9.0,
-        7.0,
-        step=0.1,
-        help="Soil acidity/alkalinity scale.",
-    )
-    nitrogen = st.number_input(
-        "Nitrogen (N) - kg/ha", 0.0, 300.0, 120.0, step=5.0
-    )
-    phosphorus = st.number_input(
-        "Phosphorus (P) - kg/ha", 0.0, 150.0, 40.0, step=2.0
-    )
-    potassium = st.number_input(
-        "Potassium (K) - kg/ha", 0.0, 200.0, 50.0, step=2.0
-    )
+st.sidebar.markdown("---")
+st.sidebar.subheader("🧪 Soil Health & Nutrients")
+soil_ph = st.sidebar.slider("Soil pH Level", 4.0, 9.0, 7.0, step=0.1)
+nitrogen = st.sidebar.number_input(
+    "Soil Nitrogen (N - kg/ha)", 0.0, 300.0, 120.0, step=5.0
+)
+phosphorus = st.sidebar.number_input(
+    "Soil Phosphorus (P - kg/ha)", 0.0, 150.0, 40.0, step=2.0
+)
+potassium = st.sidebar.number_input(
+    "Soil Potassium (K - kg/ha)", 0.0, 200.0, 50.0, step=2.0
+)
 
-# Accordion 4: Farm Inputs
-with st.sidebar.expander("🚜 Agricultural Management", expanded=False):
-    fertilizer = st.number_input(
-        "Fertilizer Usage - kg/ha", 0.0, 500.0, 150.0, step=10.0
-    )
-    pesticide = st.number_input(
-        "Pesticide Usage - kg/ha", 0.0, 20.0, 2.5, step=0.5
-    )
+st.sidebar.markdown("---")
+st.sidebar.subheader("🚜 Agricultural Management")
+fertilizer = st.sidebar.number_input(
+    "Fertilizer Usage (kg/ha)", 0.0, 500.0, 150.0, step=10.0
+)
+pesticide = st.sidebar.number_input(
+    "Pesticide Usage (kg/ha)", 0.0, 20.0, 2.5, step=0.5
+)
 
 
 # ---------------------------------------------------------
-# Calculation Engine
+# Mathematical Calculation
 # ---------------------------------------------------------
 def load_coefficients():
     json_path = "model_coefficients.json"
@@ -165,15 +129,15 @@ def load_coefficients():
 
 coeffs = load_coefficients()
 
-# MATLAB Base Linear Regression
-base_yield = (
-    coeffs.get("Intercept", 0)
-    + (coeffs.get("Temp", 0) * temperature)
-    + (coeffs.get("Rainfall", 0) * rainfall)
-    + (coeffs.get("Moisture", 0) * soil_moisture)
-)
+# Contributions
+c_intercept = coeffs.get("Intercept", 0)
+c_temp = coeffs.get("Temp", -0.1298) * temperature
+c_rain = coeffs.get("Rainfall", 0.01575) * rainfall
+c_moist = coeffs.get("Moisture", -0.0546) * soil_moisture
 
-# Extended Agronomic Scaling Multipliers
+base_yield = c_intercept + c_temp + c_rain + c_moist
+
+# Agronomic scaling multipliers
 crop_factors = {
     "Rice": 1.2,
     "Wheat": 1.1,
@@ -193,139 +157,75 @@ final_yield = max(
     base_yield * crop_factors.get(crop_type, 1.0) * ph_factor * nutrient_factor,
 )
 
+
 # ---------------------------------------------------------
-# Main Page Content
+# Main Interface Display
 # ---------------------------------------------------------
+st.write("## Predicted Harvest Output")
+
 st.markdown(
-    '<div class="main-title">🌾 Crop Yield Prediction Dashboard</div>',
-    unsafe_allow_html=True,
-)
-st.markdown(
-    '<div class="sub-title">Real-time agricultural yield forecasting using machine learning regression models.</div>',
+    f"""
+    <div class="output-container">
+        <div class="output-title">Estimated Crop Yield ({crop_type})</div>
+        <div class="output-value">{final_yield:.2f} <span style="font-size: 1.5rem; color: #94A3B8;">tonnes/ha</span></div>
+    </div>
+""",
     unsafe_allow_html=True,
 )
 
-# Top Output Hero Cards
-col1, col2 = st.columns([1.2, 1.8])
-
-with col1:
-    st.markdown(
-        f"""
-        <div class="metric-card">
-            <div class="metric-label">Estimated Output ({crop_type})</div>
-            <div class="metric-value">{final_yield:.2f} <span style="font-size:1.2rem;">tonnes/ha</span></div>
-        </div>
-    """,
-        unsafe_allow_html=True,
+# Expandable Inspection View (Matching Second Screenshot)
+with st.expander("🔍 Inspect Action Regression Formula & Calculations"):
+    st.markdown("#### **Parameter Step Contributions:**")
+    st.write(f"• **Intercept:** `{c_intercept:.4f}`")
+    st.write(
+        f"• **Temp Contribution:** `{coeffs.get('Temp', -0.1298):.4f}` × `{temperature}°C` = **`{c_temp:.2f}`**"
     )
-
-with col2:
+    st.write(
+        f"• **Rainfall Contribution:** `{coeffs.get('Rainfall', 0.01575):.4f}` × `{rainfall}mm` = **`{c_rain:.2f}`**"
+    )
+    st.write(
+        f"• **Moisture Contribution:** `{coeffs.get('Moisture', -0.0546):.4f}` × `{soil_moisture}%` = **`{c_moist:.2f}`**"
+    )
+    st.write(f"• **Crop Scaling Factor ({crop_type}):** `× {crop_factors.get(crop_type, 1.0)}`")
+    st.write(f"• **Soil pH Health Factor:** `× {ph_factor}`")
+    st.write(f"• **Nutrient/Fertilizer Factor:** `× {nutrient_factor:.3f}`")
+    st.markdown("---")
     st.markdown(
-        f"""
-        <div class="info-card">
-            <h4 style="margin-top:0; color:#1E3A8A;">📌 Current Overview</h4>
-            <p style="margin-bottom:6px;"><strong>Selected Crop:</strong> <span style="color:#059669; font-weight:600;">{crop_type}</span></p>
-            <p style="margin-bottom:6px;"><strong>Climate Profile:</strong> {temperature}°C Temp | {rainfall} mm Rainfall | {soil_moisture}% Moisture</p>
-            <p style="margin-bottom:0;"><strong>Soil & Nutrients:</strong> pH {soil_ph} | NPK Total: {npk_total:.0f} kg/ha | Fertilizer: {fertilizer} kg/ha</p>
-        </div>
-    """,
+        f"### **Total Calculated Yield:** <span style='color:#38BDF8;'>**{final_yield:.2f} tonnes/ha**</span>",
         unsafe_allow_html=True,
     )
 
 st.write("")
-st.write("")
+st.write("### 📋 Complete Parameter Summary")
 
-# Detailed Views in Tabs
-tab1, tab2, tab3 = st.tabs(
-    [
-        "📋 Complete Input Summary",
-        "📐 MATLAB Model Analysis",
-        "💡 Quick Recommendations",
-    ]
-)
+# Single Table containing all input values and final yield at the bottom
+summary_table = {
+    "Parameter": [
+        "Crop Type",
+        "Temperature",
+        "Rainfall",
+        "Soil Moisture",
+        "Soil pH",
+        "Nitrogen (N)",
+        "Phosphorus (P)",
+        "Potassium (K)",
+        "Fertilizer Usage",
+        "Pesticide Usage",
+        "TOTAL PREDICTED CROP YIELD",
+    ],
+    "Value": [
+        crop_type,
+        f"{temperature} °C",
+        f"{rainfall} mm",
+        f"{soil_moisture} %",
+        f"{soil_ph}",
+        f"{nitrogen} kg/ha",
+        f"{phosphorus} kg/ha",
+        f"{potassium} kg/ha",
+        f"{fertilizer} kg/ha",
+        f"{pesticide} kg/ha",
+        f"{final_yield:.2f} tonnes/ha",
+    ],
+}
 
-with tab1:
-    st.write("### Complete Parameter Summary & Final Yield")
-
-    summary_data = {
-        "Category": [
-            "Crop Profile",
-            "Weather / Climate",
-            "Weather / Climate",
-            "Weather / Climate",
-            "Soil Health",
-            "Soil Nutrients",
-            "Soil Nutrients",
-            "Soil Nutrients",
-            "Farm Management",
-            "Farm Management",
-            "🎯 FINAL RESULT",
-        ],
-        "Parameter Name": [
-            "Target Crop Type",
-            "Temperature",
-            "Rainfall",
-            "Soil Moisture",
-            "Soil pH",
-            "Nitrogen (N)",
-            "Phosphorus (P)",
-            "Potassium (K)",
-            "Fertilizer Applied",
-            "Pesticide Applied",
-            "PREDICTED CROP YIELD",
-        ],
-        "Value": [
-            crop_type,
-            f"{temperature} °C",
-            f"{rainfall} mm",
-            f"{soil_moisture} %",
-            f"{soil_ph}",
-            f"{nitrogen} kg/ha",
-            f"{phosphorus} kg/ha",
-            f"{potassium} kg/ha",
-            f"{fertilizer} kg/ha",
-            f"{pesticide} kg/ha",
-            f"{final_yield:.2f} tonnes/ha",
-        ],
-    }
-
-    st.table(summary_data)
-
-with tab2:
-    st.write("### Underlying Mathematics")
-    st.info(
-        "The baseline calculation uses linear regression parameters trained in MATLAB and exported via JSON."
-    )
-
-    st.markdown(
-        r"""
-    $$Y = \beta_0 + (\beta_1 \cdot \text{Temp}) + (\beta_2 \cdot \text{Rainfall}) + (\beta_3 \cdot \text{Moisture})$$
-    """
-    )
-
-    st.code(
-        f"Yield = ({temperature} * -0.1298) + ({rainfall} * 0.01575) + ({soil_moisture} * -0.0546) = {base_yield:.2f} tonnes/ha (Base Yield)"
-    )
-
-    st.write("**Model Coefficients (`model_coefficients.json`):**")
-    st.json(coeffs)
-
-with tab3:
-    st.write("### Agricultural Insights")
-    if 6.0 <= soil_ph <= 7.5:
-        st.success(
-            "✅ **Soil pH is Optimal:** Your soil pH is in the ideal neutral range (6.0–7.5) for optimal nutrient absorption."
-        )
-    else:
-        st.warning(
-            "⚠️ **Soil pH Alert:** Soil pH is outside the ideal range (6.0–7.5). Consider applying lime (if acidic) or gypsum (if alkaline)."
-        )
-
-    if rainfall < 300:
-        st.info(
-            "💧 **Water Stress Warning:** Rainfall is low. Supplemental irrigation is strongly recommended."
-        )
-    elif rainfall > 800:
-        st.info(
-            "🌧️ **High Moisture:** Sufficient rainfall detected. Ensure proper field drainage to prevent waterlogging."
-        )
+st.table(summary_table)
